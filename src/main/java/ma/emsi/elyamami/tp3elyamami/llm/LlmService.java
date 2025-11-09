@@ -56,7 +56,7 @@ public class LlmService implements Serializable {
 
         // Créer l'implémentation de l'interface GuideTouristique
         // AiServices implémente automatiquement l'interface avec @SystemMessage
-        // IMPORTANT : Pas de ChatMemory ici = chaque appel est indépendant (stateless)
+
         GuideTouristique service = AiServices.builder(GuideTouristique.class)
                 .chatModel(model)
                 // PAS de .chatMemory() = stateless (parfait pour REST)
