@@ -48,7 +48,7 @@ public class LlmService implements Serializable {
         // Créer le modèle de chat Gemini
         ChatModel model = GoogleAiGeminiChatModel.builder()
                 .apiKey(geminiKey)
-                .modelName("gemini-1.5-flash-latest") // Rapide et économique
+                .modelName("gemini-2.5-flash") // Rapide et économique
                 // Alternatives possibles :
                 // - "gemini-1.5-pro-latest" : plus puissant
                 // - "gemini-pro" : version stable

@@ -2,9 +2,8 @@ package ma.emsi.elyamami.tp3elyamami.llm;
 
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
+import dev.langchain4j.service.V;
 import ma.emsi.elyamami.tp3elyamami.rest.TouristInfo;
-// L'import problématique a été retiré.
-
 
 /**
  * Interface de service LLM pour le guide touristique.
@@ -12,24 +11,30 @@ import ma.emsi.elyamami.tp3elyamami.rest.TouristInfo;
  */
 public interface GuideTouristique {
 
-    // IMPORTANT: Le rôle système force le LLM à répondre dans le format JSON précis.
+    /**
+     * Génère des informations touristiques pour un lieu donné.
+     *
+     * @param location Le nom de la ville ou du pays
+     * @param numberOfPlaces Le nombre d'endroits à visiter
+     * @return Un objet TouristInfo avec les données
+     */
     @SystemMessage("""
-        Vous êtes un guide touristique expert. Votre tâche est de fournir des informations 
-        précises sur une ville ou un pays.
-        N'utilise pas Markdown. Répondez STRICTEMENT au format JSON suivant :
+        Tu es un guide touristique expert. 
+        Pour chaque ville ou pays demandé, tu dois fournir :
+        1. Les principaux endroits à visiter (selon le nombre demandé)
+        2. Le prix moyen d'un repas dans la devise du pays
+        
+        N'utilise pas Markdown.
+        
+        Ta réponse DOIT être strictement au format JSON suivant :
         {
-          "ville_ou_pays": "<nom du lieu>",
-          "endroits_a_visiter": ["<endroit 1>", "<endroit 2>", ...],
+          "ville_ou_pays": "nom de la ville ou du pays",
+          "endroits_a_visiter": ["endroit 1", "endroit 2", ...],
           "prix_moyen_repas": "<prix> <devise du pays>"
         }
+        
+        Ne retourne RIEN d'autre que ce JSON pur, sans backticks ni formatting.
         """)
-    @UserMessage("Indique les {numberOfPlaces} principaux endroits à visiter à/en {location} et le prix moyen d'un repas.")
-    // L'annotation @ResponseFormat.Json (ou @Json) a été retirée pour résoudre la compilation.
-    // L'annotation @ResponseFormat.Json est maintenant gérée dans LlmService.java.
-    TouristInfo generateInfo(
-            // FIX: Suppression des annotations @UserMessage sur les paramètres.
-            // LangChain4j mappe automatiquement par nom de paramètre (location, numberOfPlaces)
-            String location,
-            int numberOfPlaces
-    );
+    @UserMessage("Indique les {{numberOfPlaces}} principaux endroits à visiter à/en {{location}} et le prix moyen d'un repas.")
+    TouristInfo generateInfo(@V("location") String location, @V("numberOfPlaces") int numberOfPlaces);
 }
